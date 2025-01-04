@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorizador de Juegos</title>
+    <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+        @keyframes typing {
+            from { width: 0% }
+            to { width: 100% }
+        }
+        @keyframes blink {
+            0%,20%,40%,60%,80%,100% { border-color: transparent }
+            10%,30%,50%,70%,90% { border-color: rgb(255, 255, 255)};
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: "Roboto", serif;
+            color: white;
+        }
+        
+        #videoFondo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;  /* Evita que el video interfiera con el click */
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        .container {
+            position: fixed;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.25);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            align-items: center;
+            display: flex;
+            margin-top: 25%;
+            margin-left: 35%;
+            flex-direction: column;
+            font-family: "Roboto", serif;
+            
+        }
+
+
+
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        button {
+            background-color: #007bff93;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: "Roboto", serif;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        button:hover {
+            background-color: #0057b379;
+        }
+
+        #juego{
+
+            background-color: rgba(0, 0, 0, 0);
+            border-radius: 20px;
+            border: 0;
+            font-family: "Roboto", serif;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            outline: none;
+            caret-color: transparent;
+
+        }
+
+        #juego::placeholder{
+            color: rgb(255, 255, 255);
+        }
+
+        .Titulo{
+
+            animation: typing 1s steps(20, end) 2s forwards, blink 5s forwards;
+            animation-delay: 0.5s;
+            overflow: hidden;
+            border-right: .15em solid rgb(255, 255, 255);
+            white-space: nowrap;
+            font-size: 1.6rem;
+            width: 0;
+
+        }
+        
+    </style>
+</head>
+<body>
+
+    
+    <!-- Contenido de la página -->
+    <div class="container">
+        <h1 class="Titulo">Categorizador de Juegos</h1>
+        <input type="text" id="juego" placeholder="Escribe el nombre del juego">
+        <button onclick="categorizar()">Categorizar</button>
+        <p id="resultado"></p>
+    </div>
+    
+    <!-- Video de fondo -->
+    <div id="videoFondo">
+        <video autoplay muted loop id="videoFondo">
+            <source src="background.mp4" type="video/mp4">
+        </video>
+    </div>
+    <script>
+
+        async function categorizar() {
+            const juego = document.getElementById("juego").value;
+            const resultadoElemento = document.getElementById("resultado");
+
+            if (juego.trim() === "") {
+                resultadoElemento.textContent = "Por favor, escribe un juego.";
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/categorizador?juego=' + encodeURIComponent(juego));
+                const resultado = await response.text();
+                resultadoElemento.textContent = `Categoría: ${resultado}`;
+            } catch (error) {
+                resultadoElemento.textContent = "Error al categorizar. Intenta de nuevo.";
+            }
+        }
+    </script>
+
+</body>
+</html>
